@@ -1,0 +1,337 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لیست بارها | پنل مدیریت</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            direction: rtl;
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(0, 210, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header h3 {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+        }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-glass:hover {
+            background: rgba(0, 210, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-glass.primary {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: right;
+            padding: 15px 12px;
+            color: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .status-pending { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .status-assigned { background: rgba(23, 162, 184, 0.2); color: #17a2b8; }
+        .status-in_progress { background: rgba(0, 210, 255, 0.2); color: #00d2ff; }
+        .status-delivered { background: rgba(40, 167, 69, 0.2); color: #7ae9a0; }
+
+        .route-intercity {
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .route-within-city {
+            color: #fbfbfb;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-edit {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit:hover {
+            background: rgba(255, 193, 7, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-action:hover {
+            background: rgba(0, 210, 255, 0.4);
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #7ae9a0;
+            padding: 12px 18px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .main-card { padding: 15px; overflow-x: auto; }
+            th, td { font-size: 12px; padding: 8px; }
+            .card-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">
+            📦 مدیریت بارها
+        </div>
+        <div class="nav-links">
+            <a href="/admin/dashboard/">📊 داشبورد</a>
+            <a href="/admin/drivers/">👥 رانندگان</a>
+            <a href="/admin/loads/">📦 بارها</a>
+            <a href="/admin/add-load/">➕ بار جدید</a>
+            <a href="/logout/">🚪 خروج</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-card">
+            <div class="card-header">
+                <h3>
+                    📋 لیست تمام بارها
+                </h3>
+                <a href="/admin/add-load/" class="btn-glass primary">
+                    ➕ بار جدید
+                </a>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-success">
+                        <span>✅</span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نوع بار</th>
+                            <th>مبدا</th>
+                            <th>مقصد</th>
+                            <th>نوع مسیر</th>
+                            <th>تاریخ بارگیری</th>
+                            <th>راننده</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for load in loads %}
+                        <tr>
+                            <td><strong>{{ load.id }}</strong></td>
+                            <td>{{ load.cargo_type }}</td>
+                            <td>{{ load.pickup_location }}</td>
+                            <td>{{ load.dropoff_location }}</td>
+                            <td>
+                                {% if load.route_type == 'intercity' %}
+                                    <span class="route-intercity">برون شهری</span>
+                                {% else %}
+                                    <span class="route-within-city">درون شهری</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ load.pickup_date_shamsi }} {{ load.pickup_time|time:"H:i" }}</td>
+                            <td>
+                                {% if load.accepted_driver %}
+                                    👤 {{ load.accepted_driver.user.get_full_name|default:load.accepted_driver.user.username }}
+                                {% else %}
+                                    <span style="color: rgba(255,255,255,0.4);">---</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ load.status }}">
+                                    {{ load.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="/admin/edit-load/{{ load.id }}/" class="btn-edit">
+                                    ✏️ ویرایش
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" style="text-align: center; padding: 40px;">
+                                📭 هیچ باری ثبت نشده است
+                                <br><br>
+                                <a href="/admin/add-load/" class="btn-glass">➕ ثبت اولین بار</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/admin/dashboard/" class="btn-action">← بازگشت به داشبورد</a>
+                <a href="/admin/add-load/" class="btn-action" style="background: rgba(0, 210, 255, 0.3);">➕ اضافه کردن بار جدید</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

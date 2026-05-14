@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ویرایش راننده | پنل مدیریت</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/simple.css' %}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            direction: rtl;
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        
+        .form-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .form-group input:disabled {
+            opacity: 0.5;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">
+            ✏️ ویرایش راننده
+        </div>
+        <div class="nav-links">
+            <a href="/admin/dashboard/">📊 داشبورد</a>
+            <a href="/admin/drivers/">👥 رانندگان</a>
+            <a href="/admin/loads/">📦 بارها</a>
+            <a href="/logout/">🚪 خروج</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="form-card">
+            <div class="form-title">
+                <span style="font-size: 28px;">✏️</span>
+                <h3>ویرایش راننده: {{ driver.user.get_full_name|default:driver.user.username }}</h3>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>نام کاربری</label>
+                    {{ form.username }}
+                    <small style="color: rgba(255,255,255,0.4); font-size: 11px;">نام کاربری قابل تغییر نیست</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>نام</label>
+                    {{ form.first_name }}
+                </div>
+                
+                <div class="form-group">
+                    <label>نام خانوادگی</label>
+                    {{ form.last_name }}
+                </div>
+                
+                <div class="form-group">
+                    <label>📱 شماره موبایل</label>
+                    {{ form.phone_number }}
+                </div>
+                
+                <div class="form-group">
+                    <label>🚛 نوع وسیله</label>
+                    {{ form.vehicle_type }}
+                </div>
+                
+                <div class="form-group">
+                    <label>🏙️ شهر فعالیت</label>
+                    {{ form.driver_city }}
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    {{ form.is_active }}
+                    <label>فعال</label>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="/admin/drivers/" class="btn-cancel">❌ انصراف</a>
+                    <button type="submit" class="btn-save">💾 ذخیره تغییرات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

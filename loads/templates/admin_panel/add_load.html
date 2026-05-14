@@ -1,0 +1,456 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>ثبت بار جدید | پنل مدیریت</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/simple.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            direction: rtl;
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(0, 210, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-title h3 {
+            font-size: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .datetime-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            grid-column: span 2;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            font-size: 14px;
+            color: white;
+            font-family: inherit;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00d2ff;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.2);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 210, 255, 0.3);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .alert {
+            padding: 12px 18px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #7ae9a0;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .alert-error, .alert-danger {
+            background: rgba(220, 53, 69, 0.2);
+            color: #ff8a7a;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        small {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            display: block;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .form-card {
+                padding: 15px;
+            }
+            
+            .form-title h3 {
+                font-size: 16px;
+            }
+            
+            .form-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .full-width {
+                grid-column: auto;
+            }
+            
+            .datetime-group {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .form-group {
+                width: 100%;
+            }
+            
+            .form-group label {
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+            
+            .form-group input, 
+            .form-group select, 
+            .form-group textarea {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            
+            .form-actions {
+                flex-direction: column-reverse;
+                gap: 10px;
+                margin-top: 20px;
+                padding-top: 15px;
+            }
+            
+            .btn-submit, .btn-cancel {
+                justify-content: center;
+                width: 100%;
+                padding: 10px 20px;
+            }
+            
+            small {
+                font-size: 10px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .form-grid {
+                gap: 15px;
+            }
+            
+            .form-group label {
+                font-size: 12px;
+            }
+            
+            .form-group input, 
+            .form-group select, 
+            .form-group textarea {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">
+            ➕ ثبت بار جدید
+        </div>
+        <div class="nav-links">
+            <a href="/admin/dashboard/">📊 داشبورد</a>
+            <a href="/admin/drivers/">👥 رانندگان</a>
+            <a href="/admin/loads/">📦 بارها</a>
+            <a href="/admin/add-load/">➕ بار جدید</a>
+            <a href="/logout/">🚪 خروج</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="form-card">
+            <div class="form-title">
+                <span style="font-size: 24px;">📝</span>
+                <h3>اطلاعات بار جدید</h3>
+            </div>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }}">
+                        <span>{% if message.tags == 'success' %}✅{% elif message.tags == 'warning' %}⚠️{% elif message.tags == 'error' %}❌{% else %}ℹ️{% endif %}</span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>📦 نوع بار</label>
+                        {{ form.cargo_type }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>⚖️ وزن (تن)</label>
+                        {{ form.weight }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>💰 مبلغ (تومان)</label>
+                        {{ form.price }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📍 شهر بارگیری</label>
+                        {{ form.pickup_location }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🏁 شهر تخلیه</label>
+                        {{ form.dropoff_location }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🚗 نوع مسیر</label>
+                        {{ form.route_type }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📌 آدرس کامل بارگیری</label>
+                        {{ form.pickup_address }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📌 آدرس کامل تخلیه</label>
+                        {{ form.dropoff_address }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📅 تاریخ بارگیری</label>
+                        {{ form.pickup_date_shamsi }}
+                        <small>مثال: 1403-02-15</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>⏰ ساعت بارگیری</label>
+                        {{ form.pickup_time }}
+                        <small>مثال: 14:30</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📅 تاریخ تحویل (اختیاری)</label>
+                        {{ form.expected_delivery_date_shamsi }}
+                        <small>مثال: 1403-02-20</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>⏰ ساعت تحویل (اختیاری)</label>
+                        {{ form.expected_delivery_time }}
+                        <small>مثال: 16:00</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🚛 نوع وسیله مورد نیاز</label>
+                        {{ form.required_vehicle }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🏙️ شهر مورد نیاز</label>
+                        {{ form.city }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📝 توضیحات اضافی</label>
+                        {{ form.description }}
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="/admin/loads/" class="btn-cancel">
+                        ❌ انصراف
+                    </a>
+                    <button type="submit" class="btn-submit">
+                        💾 ثبت بار و ارسال پیامک
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

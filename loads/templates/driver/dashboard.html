@@ -1,0 +1,628 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>پنل راننده | سیستم اعلام بار</title>
+    <link rel="stylesheet" href="{% static 'css/simple.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            direction: rtl;
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+            padding-bottom: 70px;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .driver-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 6px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(220, 53, 69, 0.5);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 18px 12px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card h3 {
+            font-size: 16px;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .stat-card p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+        
+        .filter-btn.inactive {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .vehicle-info {
+            background: rgba(0, 210, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: #00d2ff;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 15px;
+        }
+        
+        .section-title h3 {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+        
+        .badge-count {
+            background: rgba(0, 210, 255, 0.3);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #00d2ff;
+        }
+        
+        .load-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 3px solid #28a745;
+            transition: all 0.3s;
+        }
+        
+        .load-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .load-card.taken {
+            border-right-color: #dc3545;
+            opacity: 0.8;
+        }
+        
+        .load-card.my-load {
+            border-right-color: #17a2b8;
+        }
+        
+        .load-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .load-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .load-price {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            display: inline-block;
+        }
+        
+        .load-details {
+            margin: 10px 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            flex-wrap: wrap;
+        }
+        
+        .address-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            flex: 1;
+            line-height: 1.5;
+        }
+        
+        .address-box strong {
+            color: #00d2ff;
+        }
+        
+        .info-badge {
+            background: rgba(0, 210, 255, 0.2);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #00d2ff;
+        }
+        
+        .accept-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            transition: all 0.3s;
+        }
+        
+        .accept-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        
+        .status-assigned {
+            background: rgba(23, 162, 184, 0.2);
+            color: #17a2b8;
+        }
+        
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+        
+        .empty-state .empty-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+        
+        .bottom-nav a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-size: 11px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 15px;
+            border-radius: 30px;
+        }
+        
+        .bottom-nav a.active, .bottom-nav a:hover {
+            color: #00d2ff;
+            background: rgba(0, 210, 255, 0.1);
+        }
+        
+        .bottom-nav a span:first-child {
+            font-size: 22px;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .stats-grid { gap: 10px; }
+            .stat-card { padding: 12px; }
+            .load-header { flex-direction: column; align-items: flex-start; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .filter-buttons { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">
+            🚚 پنل راننده
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="driver-info">
+                👤 {{ driver.user.get_full_name|default:driver.user.username }}
+            </div>
+            <a href="/logout/" class="logout-btn">
+                🚪 خروج
+            </a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🚛</div>
+                <h3>{{ driver.get_vehicle_type_display }}</h3>
+                <p>نوع وسیله شما</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏙️</div>
+                <h3>{{ driver.get_driver_city_display }}</h3>
+                <p>شهر فعالیت شما</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <h3>{{ my_loads|length }}</h3>
+                <p>بارهای قبول شده</p>
+            </div>
+        </div>
+        
+        <div class="filter-bar">
+            <div class="vehicle-info">
+                <p>🚛 وسیله شما: {{ driver.get_vehicle_type_display }}</p>
+            </div>
+            <div class="filter-buttons">
+                <a href="?filter_vehicle=false" class="filter-btn {% if not filter_active %}active{% else %}inactive{% endif %}">
+                    🚛 همه بارها
+                </a>
+                <a href="?filter_vehicle=true" class="filter-btn {% if filter_active %}active{% else %}inactive{% endif %}">
+                    🔧 فقط بارهای مناسب {{ driver.get_vehicle_type_display }}
+                </a>
+            </div>
+        </div>
+        
+        <div class="section-title">
+            <h3>
+                📋 بارهای قابل قبول برای شما
+            </h3>
+            <span class="badge-count">{{ available_loads|length }}</span>
+        </div>
+        
+        {% if available_loads %}
+            {% for load in available_loads %}
+            <div class="load-card">
+                <div class="load-header">
+                    <span class="load-title">
+                        📦 {{ load.cargo_type }}
+                    </span>
+                    <span class="load-price">
+                        💰 <span class="price-number">{{ load.price|floatformat:0 }}</span> تومان
+                    </span>
+                </div>
+                
+                <div class="load-details">
+                    <div class="detail-row">
+                        <span>🗺️</span>
+                        <span>{{ load.pickup_location }} ← {{ load.dropoff_location }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span>📍</span>
+                        <div class="address-box">
+                            <strong>آدرس بارگیری:</strong> {{ load.pickup_address }}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span>🏁</span>
+                        <div class="address-box">
+                            <strong>آدرس تخلیه:</strong> {{ load.dropoff_address }}
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span>🚗</span>
+                        <span>نوع مسیر: {{ load.get_route_type_display }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span>⏰</span>
+                        <span>زمان بارگیری: {{ load.pickup_date_shamsi }} ساعت {{ load.pickup_time|time:"H:i" }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span>⚖️</span>
+                        <span>وزن: {{ load.weight }} تن</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span>📍</span>
+                        <span>شهر بار: {{ load.get_city_display }}</span>
+                        <span class="info-badge">🚛 وسیله مورد نیاز: {{ load.get_required_vehicle_display }}</span>
+                    </div>
+                    
+                    {% if load.description %}
+                    <div class="detail-row">
+                        <span>📝</span>
+                        <span>{{ load.description|truncatechars:50 }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <button class="accept-btn" onclick="acceptLoad({{ load.id }})">
+                    ✅ قبول بار
+                </button>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>هیچ باری برای قبول وجود ندارد</p>
+                {% if filter_active %}
+                <p style="font-size: 12px; margin-top: 8px;">برای دیدن همه بارها، گزینه "همه بارها" را انتخاب کنید</p>
+                {% else %}
+                <p style="font-size: 12px; margin-top: 8px;">به زودی بارهای جدید اعلام می‌شود</p>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        {% if my_loads %}
+            <div class="section-title">
+                <h3>
+                    ✅ بارهای قبول شده توسط من
+                </h3>
+                <span class="badge-count">{{ my_loads|length }}</span>
+            </div>
+            
+            {% for load in my_loads %}
+            <div class="load-card my-load">
+                <div class="load-header">
+                    <span class="load-title">
+                        📦 {{ load.cargo_type }}
+                    </span>
+                    <span class="status-badge status-assigned">
+                        ✅ {{ load.get_status_display }}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span>🗺️</span>
+                    <span>{{ load.pickup_location }} ← {{ load.dropoff_location }}</span>
+                </div>
+                <div class="detail-row">
+                    <span>⏰</span>
+                    <span>{{ load.pickup_date_shamsi }} ساعت {{ load.pickup_time|time:"H:i" }}</span>
+                </div>
+                <div class="detail-row">
+                    <span>📍</span>
+                    <span>شهر: {{ load.city }} | وسیله مورد نیاز: {{ load.required_vehicle }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+                  
+    
+    <div class="bottom-nav">
+        <a href="/driver/dashboard/" class="active">
+            <span>📋</span>
+            <span>بارها</span>
+        </a>
+        <a href="/driver/my-loads/">
+            <span>✅</span>
+            <span>بارهای من</span>
+        </a>
+        <a href="/logout/">
+            <span>🚪</span>
+            <span>خروج</span>
+        </a>
+    </div>
+    
+    <script>
+        function acceptLoad(loadId) {
+            if(confirm('آیا از قبول این بار مطمئن هستید؟\nپس از قبول، بار برای شما قفل می‌شود.')) {
+                fetch('/driver/accept-load/' + loadId + '/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        alert('✅ ' + data.message);
+                        location.reload();
+                    } else {
+                        alert('❌ ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('خطا در ارتباط با سرور');
+                });
+            }
+        }
+        
+        function getCookie(name) {
+            let value = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        value = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return value;
+        }
+
+        function formatNumbers() {
+            document.querySelectorAll('.price-number').forEach(function(el) {
+                let val = el.innerText;
+                let num = parseFloat(val);
+                if (!isNaN(num)) {
+                    el.innerText = num.toLocaleString('fa-IR');
+                }
+            });
+        }
+        
+        formatNumbers();
+    </script>
+</body>
+</html>

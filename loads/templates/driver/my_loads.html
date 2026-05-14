@@ -1,0 +1,384 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>بارهای من | پنل راننده</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/simple.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            direction: rtl;
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+            padding-bottom: 70px;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 6px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .detail-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 4px solid #17a2b8;
+            transition: all 0.3s;
+        }
+        
+        .detail-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-header h3 {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .status-assigned {
+            background: rgba(23, 162, 184, 0.2);
+            color: #17a2b8;
+        }
+        
+        .status-in_progress {
+            background: rgba(0, 210, 255, 0.2);
+            color: #00d2ff;
+        }
+        
+        .status-delivered {
+            background: rgba(40, 167, 69, 0.2);
+            color: #7ae9a0;
+        }
+        
+        .price-number {
+            font-weight: bold;
+            color: #17d2d2;
+            font-size: 16px;
+        }
+        
+        .detail-section {
+            margin-bottom: 15px;
+        }
+        
+        .detail-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .address-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            direction: ltr;
+            text-align: right;
+        }
+        
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(0, 210, 255, 0.3);
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+        
+        .bottom-nav a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 15px;
+            border-radius: 30px;
+        }
+        
+        .bottom-nav a.active, .bottom-nav a:hover {
+            color: #00d2ff;
+            background: rgba(0, 210, 255, 0.1);
+        }
+        
+        .bottom-nav a span:first-child {
+            font-size: 22px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .detail-card { padding: 15px; }
+            .detail-grid { grid-template-columns: 1fr; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">
+            ✅ بارهای من
+        </div>
+        <a href="/logout/" class="logout-btn">
+            🚪 خروج
+        </a>
+    </div>
+    
+    <div class="container">
+        {% if loads %}
+            {% for load in loads %}
+            <div class="detail-card">
+                <div class="card-header">
+                    <h3>
+                        📦 {{ load.cargo_type }}
+                    </h3>
+                    <span class="status-badge status-{{ load.status }}">
+                        {% if load.status == 'assigned' %}✅ اختصاص یافته
+                        {% elif load.status == 'in_progress' %}🔄 در حال حمل
+                        {% elif load.status == 'delivered' %}🎯 تحویل شده
+                        {% else %}{{ load.get_status_display }}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-title">
+                        🗺️ مسیر حمل
+                    </div>
+                    <div class="detail-grid">
+                        <div>مبدا:</div>
+                        <div><strong>{{ load.pickup_location }}</strong></div>
+                        <div>مقصد:</div>
+                        <div><strong>{{ load.dropoff_location }}</strong></div>
+                        <div>نوع مسیر:</div>
+                        <div><strong>{% if load.route_type == 'intercity' %}برون شهری{% else %}درون شهری{% endif %}</strong></div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-title">
+                        📍 آدرس دقیق
+                    </div>
+                    <div class="detail-grid">
+                        <div>آدرس بارگیری:</div>
+                        <div class="address-box">{{ load.pickup_address }}</div>
+                        <div>آدرس تخلیه:</div>
+                        <div class="address-box">{{ load.dropoff_address }}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-title">
+                        ⏰ زمان‌بندی
+                    </div>
+                    <div class="detail-grid">
+                        <div>تاریخ بارگیری:</div>
+                        <div>{{ load.pickup_date_shamsi }}</div>
+                        <div>ساعت بارگیری:</div>
+                        <div>{{ load.pickup_time|time:"H:i" }}</div>
+                        {% if load.expected_delivery_date_shamsi %}
+                        <div>تاریخ تحویل:</div>
+                        <div>{{ load.expected_delivery_date_shamsi }}</div>
+                        {% endif %}
+                        {% if load.expected_delivery_time %}
+                        <div>ساعت تحویل:</div>
+                        <div>{{ load.expected_delivery_time|time:"H:i" }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-title">
+                        📋 اطلاعات بار
+                    </div>
+                    <div class="detail-grid">
+                        <div>وزن:</div>
+                        <div>{{ load.weight }} تن</div>
+                        <div>مبلغ:</div>
+                        <div><span class="price-number" data-price="{{ load.price|floatformat:0 }}">{{ load.price|floatformat:0 }}</span> تومان</div>
+                        <div>وسیله مورد نیاز:</div>
+                        <div>{{ load.get_required_vehicle_display }}</div>
+                        <div>شهر:</div>
+                        <div>{{ load.get_city_display }}</div>
+                    </div>
+                </div>
+                
+                {% if load.description %}
+                <div class="detail-section">
+                    <div class="detail-title">
+                        📝 توضیحات اضافی
+                    </div>
+                    <div class="address-box" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;">
+                        {{ load.description }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if load.accepted_datetime %}
+                <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.5);">
+                    ✅ قبول شده در: {{ load.accepted_datetime|date:"Y/m/d H:i" }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div style="font-size: 64px;">📭</div>
+                <p style="color: rgba(255,255,255,0.7); margin-top: 15px;">هنوز باری قبول نکرده‌اید</p>
+                <a href="/driver/dashboard/" class="back-btn" style="margin-top: 20px;">← بازگشت به بارهای قابل قبول</a>
+            </div>
+        {% endif %}
+        
+        {% if loads %}
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/driver/dashboard/" class="back-btn">← بازگشت به بارهای قابل قبول</a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="bottom-nav">
+        <a href="/driver/dashboard/">
+            <span>📋</span>
+            <span>بارها</span>
+        </a>
+        <a href="/driver/my-loads/" class="active">
+            <span>✅</span>
+            <span>بارهای من</span>
+        </a>
+        <a href="/logout/">
+            <span>🚪</span>
+            <span>خروج</span>
+        </a>
+    </div>
+
+    <script>
+        function formatNumbers() {
+            document.querySelectorAll('.price-number').forEach(function(el) {
+                let val = el.getAttribute('data-price') || el.innerText;
+                let num = parseFloat(val);
+                if (!isNaN(num)) {
+                    el.innerText = num.toLocaleString('fa-IR');
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', formatNumbers);
+    </script>
+</body>
+</html>
