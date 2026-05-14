@@ -94,6 +94,7 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
+#
 SMS_IR_API_KEY = ''
 SMS_IR_LINE_NUMBER = ''
 ADMIN_PHONE_NUMBER = ''
