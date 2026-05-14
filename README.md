@@ -1,15 +1,3 @@
-برای اینکه README خفن و حرفه‌ای به نظر برسه، باید اون رو به یک فایل `README.md` تبدیل کنی و توی ریپازیتوری گیت‌هاب قرار بدی. برای این کار:
-
-## 1. فایل README رو ایجاد کن
-
-```bash
-cd /Users/mohammad/Desktop/thelast/myproject
-nano README.md
-```
-
-## 2. محتوای زیر رو کپی کن داخل فایل:
-
-```markdown
 # 🚚 Barsoo - Cargo Management System
 
 **Barsoo** is a comprehensive online platform designed to connect cargo owners with drivers. It streamlines the process of posting, finding, and assigning freight loads. The system features an OTP login system, automated SMS notifications, and a Progressive Web App (PWA) for mobile users.
@@ -175,48 +163,3 @@ Barsu/
 3. Commit changes (`git commit -m 'Add amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 📞 Contact
-
-- **Developer:** Mohammad MHB
-- **GitHub:** [MohammadMHB](https://github.com/MohammadMHB)
-- **Project:** [https://github.com/MohammadMHB/Barsu](https://github.com/MohammadMHB/Barsu)
-- **Live Demo:** [https://barsu.ir](https://barsu.ir)
-
----
-
-## 🙏 Acknowledgements
-
-- [Django](https://www.djangoproject.com/) - Web framework
-- [SMS.ir](https://sms.ir/) - SMS service
-- [Bootstrap](https://getbootstrap.com/) - UI framework
-- [Font Awesome](https://fontawesome.com/) - Icons
-- [Chabokan](https://chabokan.net/) - Hosting platform
-
----
-
-> Built with ❤️ for the logistics industry in Iran 🇮🇷
-```
-
-## 3. ذخیره و کامیت کن
-
-```bash
-# ذخیره فایل (Ctrl+X, Y, Enter در nano)
-
-# اضافه کردن به گیت
-git add README.md
-
-# کامیت
-git commit -m "Add professional README.md"
-
-# پوش به گیت‌هاب
-git push origin main
-```
